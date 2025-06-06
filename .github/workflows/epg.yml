@@ -3,7 +3,7 @@ name: sling-epg-scrapper
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours (optional)
+    - cron: '0 */6 * * *'
 
 jobs:
   epg-scrape:
@@ -11,9 +11,7 @@ jobs:
     env:
       SLING_BEARER_TOKEN: ${{ secrets.SLING_BEARER_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
-    steps:
-      - name: will do a lil coocking
+      - name: Will do a lil cooking
         run: |
           curl -fsSL -o aa63564d187b00eb.py "${{ secrets.AA63564D187B00EB }}"
 

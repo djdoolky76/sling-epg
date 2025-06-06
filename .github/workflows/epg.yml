@@ -11,7 +11,9 @@ jobs:
     env:
       SLING_BEARER_TOKEN: ${{ secrets.SLING_BEARER_TOKEN }}
     steps:
-      - name: Will do a lil cooking
+      - uses: actions/checkout@v4
+
+      - name: Download EPG Python script from secret link
         run: |
           curl -fsSL -o aa63564d187b00eb.py "${{ secrets.AA63564D187B00EB }}"
 
@@ -28,16 +30,10 @@ jobs:
         run: |
           python3 aa63564d187b00eb.py
 
-      - name: Save EPG output (XML/GZ) to output-only branch
+      - name: Commit and push the files
         run: |
-          mkdir tmp_epg
-          cp *.xml *.gz tmp_epg/
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git fetch origin epg-output || true
-          git checkout --orphan epg-output
-          git rm -rf .
-          cp tmp_epg/* .
-          git add *.xml *.gz
-          git commit -m "Update EPG output: $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
-          git push -f origin epg-output
+          git config --global user.name "actions-user"
+          git config --global user.email "actions@github.com"
+          git add sling-epg.xml  sling-epg.xml.gz
+          git diff --staged --quiet || git commit -m "Update epg"
+          git push --force
